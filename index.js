@@ -67,7 +67,6 @@ const init = async () => {
     try {
         await prepare(args);
         await download(args);
-        process.exit(0);
     } catch (e) {
         if (["ValidationError", "CommonError"].includes(e.name)) {
             io.warning(e.message);
