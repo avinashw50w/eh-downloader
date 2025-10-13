@@ -1,14 +1,14 @@
-# e-hentai-downloader
+# eh downloader
 
-CLI multi-worker gallery downloader for e-hentai.org website.
+CLI multi-worker gallery downloader for e-h website.
 
-![e-hentai-downloader](.docs/cli.jpg)
+![eh-downloader](.docs/cli.jpg)
 
 ### Quick start
 
 1. Clone this repo:
     ```shell
-    git clone https://github.com/yuukari/e-hentai-downloader.git
+    git clone https://github.com/avinashw50w/eh-downloader.git
     ```
 2. Install dependencies:
     ```shell
