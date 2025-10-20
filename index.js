@@ -42,10 +42,10 @@ const init = async () => {
         required: false,
         default: "./galleries",
     });
-    parser.add_argument('-n', '--createnewfolder', {
-        action: 'store_true',
-        help: 'Create a new folder if already exists'
-    });
+    // parser.add_argument('-n', '--createnewfolder', {
+    //     action: 'store_true',
+    //     help: 'Create a new folder if already exists'
+    // });
     parser.add_argument("-ft", "--filename-template", {
         help:
             'Filename template, default is "*f*e", available variables: ' +
@@ -104,20 +104,12 @@ const prepare = async (args) => {
 };
 
 const download = async (args) => {
-    const foldername = sanitize(gp.getInfo().title);
+    const albumId = args.link.split('/').filter(Boolean).reverse()[0];
+    const foldername = `${albumId}_${sanitize(gp.getInfo().title)}`;
     let outputDirectory = path.join(args.out, foldername);
     const dirExists = existsSync(outputDirectory);
 
-    if (dirExists) {
-        if (args.createnewfolder) {
-            outputDirectory = path.join(
-                args.out,
-                foldername + "_" + randomString.getRandomString(),
-            );
-            io.info(`Creating new directory on path "${outputDirectory}"`);
-            await mkdir(outputDirectory, { recursive: true });
-        }
-    } else {
+    if (!dirExists) {
         io.info(`Creating new directory on path "${outputDirectory}"`);
         await mkdir(outputDirectory, { recursive: true });
     }
