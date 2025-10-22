@@ -105,7 +105,7 @@ const prepare = async (args) => {
 
 const download = async (args) => {
     const albumId = args.link.split('/').filter(Boolean).reverse()[0];
-    const foldername = `${albumId}_${sanitize(gp.getInfo().title)}`;
+    const foldername = `${sanitize(gp.getInfo().title)}_${albumId}`;
     let outputDirectory = path.join(args.out, foldername);
     const dirExists = existsSync(outputDirectory);
 
