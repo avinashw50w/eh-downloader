@@ -16,6 +16,8 @@ import randomString from "./src/utils/randomString.js";
 
 import ValidationError from "./src/error/validationError.js";
 
+const COOKIES = "ipb_member_id=7211053; ipb_pass_hash=8e32e4d0f86e1a8f5c386a7531e7ec61; ipb_session_id=64c36abd29bd5ff7b1ce1d57511d3d83; sk=qobk6zsm86053ofne1bqjugcf2p3; nw=1; event=1762984976;"
+
 const gp = galleryParser();
 const downloadProgress = new ProgressBar();
 
@@ -35,7 +37,7 @@ const init = async () => {
     parser.add_argument("-wr", "--worker-retries", {
         help: "Worker download retries count, default is 3",
         required: false,
-        default: 3,
+        default: 5,
     });
     parser.add_argument("-o", "--out", {
         help: 'Output directory, default is "./galleries"',
@@ -61,8 +63,36 @@ const init = async () => {
         required: false,
         default: 0,
     });
+    parser.add_argument("-ps", "--start-page", {
+        help:
+            'Starting Page number(starting page number is 0). eg. 3',
+        required: false,
+        default: 0,
+    });
+    parser.add_argument("-pe", "--end-page", {
+        help:
+            'Ending page number(starting page number is 0). eg. 7',
+        required: false,
+        default: -1,
+    });
+    parser.add_argument("-ir", "--image-range", {
+        help:
+            'Number of images to download from the start. eg. 203',
+        required: false,
+        default: -1,
+    });
+
+    parser.add_argument("-ck", "--cookies", {
+        help: 'Session cookies as a string (e.g., "ipb_member_id=xxx; ipb_pass_hash=yyy")',
+        required: false,
+        default: "",
+    });
 
     const args = parser.parse_args();
+    
+    if (!args.cookies) {
+        args.cookies = COOKIES;
+    }
 
     try {
         await prepare(args);
@@ -86,7 +116,7 @@ const prepare = async (args) => {
         );
     }
 
-    await gp.init(args.link);
+    await gp.init(args.link, args.cookies);
     const galleryInfo = gp.getInfo();
     io.info(
         `Gallery found!` +
@@ -104,7 +134,7 @@ const prepare = async (args) => {
 };
 
 const download = async (args) => {
-    const albumId = args.link.split('/').filter(Boolean).reverse()[0];
+    const albumId = args.link.split('?')[0].split('/').filter(Boolean).reverse()[0];
     const foldername = `${sanitize(gp.getInfo().title)}_${albumId}`;
     let outputDirectory = path.join(args.out, foldername);
     const dirExists = existsSync(outputDirectory);
@@ -121,6 +151,7 @@ const download = async (args) => {
         outputDirectory,
         filenameTemplate: args.filename_template,
         initialCounter: args.counter,
+        cookies: args.cookies,
 
         onWorkerDone: handleDownloadProgressUpdate,
         onWorkerFailed: handleDownloadProgressUpdate,

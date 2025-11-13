@@ -15,6 +15,7 @@ const downloadWorker = ({
     outputDirectory,
     filenameTemplate,
     counter,
+    cookies = "",
 }) => {
     let _parseImageLinkFails = 0;
     let _downloadImageFails = 0;
@@ -56,7 +57,12 @@ const downloadWorker = ({
     };
 
     const _sendRequest = async (url) => {
-        const response = await fetch(url);
+        const headers = {};
+        if (cookies) {
+            headers['Cookie'] = cookies;
+        }
+
+        const response = await fetch(url, { headers });
 
         if (response.status !== 200) {
             throw new Error(

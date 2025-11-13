@@ -16,6 +16,7 @@ const workerManager = () => {
         outputDirectory,
         filenameTemplate,
         initialCounter,
+        cookies = "",
 
         onWorkerDone,
         onWorkerFailed
@@ -31,7 +32,8 @@ const workerManager = () => {
                 outputDirectory: outputDirectory,
 
                 filenameTemplate,
-                counter
+                counter,
+                cookies
             });
 
             counter++;

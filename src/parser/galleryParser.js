@@ -5,6 +5,7 @@ import CommonError from '../error/commonError.js';
 
 const galleryParser = () => {
     let _link = undefined;
+    let _cookies = "";
 
     let _info = {
         title: undefined,
@@ -16,8 +17,9 @@ const galleryParser = () => {
 
     let _pagesData = [];
 
-    const init = async (link) => {
+    const init = async (link, cookies = "") => {
         _link = link;
+        _cookies = cookies;
         const galleryPageHtml = await _sendRequest(_link);
 
         if (
@@ -63,7 +65,12 @@ const galleryParser = () => {
     const getPagesData = () => _pagesData;
 
     const _sendRequest = async (url) => {
-        const response = await fetch(url);
+        const headers = {};
+        if (_cookies) {
+            headers['Cookie'] = _cookies;
+        }
+
+        const response = await fetch(url, { headers });
 
         if (response.status === 200) {
             return await response.text();
