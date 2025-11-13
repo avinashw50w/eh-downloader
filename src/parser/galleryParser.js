@@ -18,7 +18,7 @@ const galleryParser = () => {
     let _pagesData = [];
 
     const init = async (link, cookies = "") => {
-        _link = link;
+        _link = link.split('?')[0];
         _cookies = cookies;
         const galleryPageHtml = await _sendRequest(_link);
 
